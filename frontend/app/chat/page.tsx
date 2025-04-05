@@ -30,7 +30,7 @@ export const Chat = () => {
     const createChatbot = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.post('http://127.0.0.1:5000/api/chatbot/create', {});
+            const res = await axios.post('https://python-backend-xiup.onrender.com/api/chatbot/create', {});
             console.log('Chatbot created:', res.data);
 
             // Save chatbot ID to state and localStorage
