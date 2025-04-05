@@ -40,8 +40,12 @@ const FoundPage = () => {
         const response = await axios.get('https://avinya-iv0j.onrender.com/api/v1/lost-and-found');
         const data: LostItem[] = response.data.data;
         setLostItems(data);
-      } catch (err:  any ) {
-        setError(err.message || 'An error occurred while fetching lost items.');
+      } catch (err:  unknown | never ) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An error occurred while fetching lost items.');
+        }
       } finally {
         setLoading(false);
       }
