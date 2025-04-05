@@ -9,6 +9,6 @@ export default async function Layout({children}: { children: React.ReactNode }) 
     }
 
     return (<div>
-        {user.role == "user" ? children : redirect("/home")}
+        {user.role == "admin" ? children : redirect("/home")}
     </div>);
 }

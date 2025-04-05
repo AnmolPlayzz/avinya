@@ -10,7 +10,11 @@ import cross from "@/public/icons/navbar/cross.svg"
 
 import {usePathname} from "next/navigation";
 import {useState} from "react";
-export default function NavBar() {
+type LinkType = {
+    href: string,
+    text: string
+}
+export default function NavBar(links: { links: LinkType[] }) {
     const path = usePathname()
     const [isOpen, setIsOpen] = useState<boolean>(false);
     function checkUrl(url: string): boolean {
@@ -24,14 +28,10 @@ export default function NavBar() {
                     }}/>
                 </Link>
                 <div className={styles.centerBox}>
-                    <Link className={checkUrl("/reclaim") ? `${styles.link} ${styles.active}` : styles.link}
-                          href="/reclaim">Reclaim</Link>
-                    <Link className={checkUrl("/inventory") ? `${styles.link} ${styles.active}` : styles.link}
-                          href="/inventory">Canteen</Link>
-                    <Link className={checkUrl("/scholarships") ? `${styles.link} ${styles.active}` : styles.link}
-                          href="/scholarships">Scholarships</Link>
-                    <Link className={checkUrl("/nutrients") ? `${styles.link} ${styles.active}` : styles.link}
-                          href="/nutrients">NutriScan</Link>
+                    {links.links.map((link:LinkType ) => (
+                        <Link key={link.href} className={checkUrl(link.href) ? `${styles.link} ${styles.active}` : styles.link}
+                              href={link.href}>{link.text}</Link>
+                    ))}
                 </div>
                 <Link href="/home" className={styles.rightBox}>
                     <Image style={{
