@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
+import styles from "./page.module.css"
 import { scholarships } from "./scholarship";
+import Image from "next/image";
+import Button from "@/components/library/buttons/button";
+import Badge from "@/components/library/badges/badges";
 
 const ScholarshipPage = () => {
-  const [error, setError] = useState<string | null>(null);
+  const [error,] = useState<string | null>(null);
 
   if (error) {
     return (
@@ -14,45 +18,176 @@ const ScholarshipPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">
+    <div className={styles.main}>
+      <h1 className={styles.head}>
         Available Scholarships
       </h1>
       {scholarships.length === 0 ? (
         <p className="text-center text-gray-600">No scholarships found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div style={{
+            maxWidth: "1200px",
+
+        }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {scholarships.map((scholarship, index) => (
             <div
               key={index}
-              className="bg-white/20 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className={styles.card}
             >
-              <img
-                src={scholarship.image}
-                alt={scholarship.name}
-                className="w-96 h-48 object-cover"
-              />
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2 text-gray-800">
-                  {scholarship.name}
-                </h2>
-                <p className="text-gray-600 mb-2">{scholarship.award}</p>
-                <p className="text-gray-800 font-medium mb-4">
-                  Eligibility: {scholarship.eligibility}
-                </p>
-                <p className="text-gray-500 mb-2">
-                  {scholarship.tentative_date}
-                </p>
-                { scholarship.deadline && <p className="text-gray-500 mb-2">Deadline: {scholarship.deadline}</p> }
-                <a
-                  href={scholarship.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
-                >
-                  Learn More
-                </a>
-              </div>
+
+                <div className="p-4" style={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                }}>
+                    <div style={{
+                        width: "100px",
+                        height: "100px",
+                        position: "relative",
+
+                        overflow: "hidden",
+                        borderRadius: "10px",
+                    }}>
+                        <Image
+                            src={scholarship.image}
+                            alt={scholarship.name}
+                            fill
+                            style={{
+                                objectFit: "cover",
+                                objectPosition: "center",
+                            }}
+                        />
+                    </div>
+                    <h2 style={{
+                        fontWeight: "800",
+                        fontSize: "24px",
+                    }}>
+                        {scholarship.name}
+                    </h2>
+                    <div style={{
+                        display: "flex",
+                        marginTop: "30px",
+                        justifyContent: "space-between",
+                        flexDirection: "column",
+                        padding: "5px 10px",
+                        backgroundColor: "rgba(21,21,21,0.73)",
+                        borderRadius: "5px",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        marginBottom: "8px",
+                    }}>
+                        <p style={{
+                            fontSize: "18px",
+                            fontWeight: "800",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            Award
+                        </p>
+                        <p style={{
+                            fontSize: "14px",
+                            fontWeight: "300",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            {scholarship.award}
+                        </p>
+                    </div>
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: "column",
+                        padding: "5px 10px",
+                        backgroundColor: "rgba(21,21,21,0.73)",
+                        borderRadius: "5px",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        marginBottom: "8px",
+
+                    }}>
+                        <p style={{
+                            fontSize: "18px",
+                            fontWeight: "800",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            Eligibility
+                        </p>
+                        <p style={{
+                            fontSize: "14px",
+                            fontWeight: "300",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            {scholarship.eligibility}
+                        </p>
+                    </div>
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: "column",
+                        padding: "5px 10px",
+                        backgroundColor: "rgba(21,21,21,0.73)",
+                        borderRadius: "5px",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        marginBottom: "8px",
+
+                    }}>
+                        <p style={{
+                            fontSize: "18px",
+                            fontWeight: "800",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            Tentative Date
+                        </p>
+                        <p style={{
+                            fontSize: "14px",
+                            fontWeight: "300",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            {scholarship.tentative_date}
+                        </p>
+                    </div>
+                    {scholarship.deadline && <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: "column",
+                        padding: "5px 10px",
+                        backgroundColor: "rgba(21,21,21,0.73)",
+                        borderRadius: "5px",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        marginBottom: "8px",
+
+                    }}>
+                        <p style={{
+                            fontSize: "18px",
+                            fontWeight: "800",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            Deadline
+                        </p>
+                        <p style={{
+                            fontSize: "14px",
+                            fontWeight: "300",
+                            color: "#ffffff",
+                            marginBottom: "5px",
+                        }}>
+                            {scholarship.deadline}
+                        </p>
+                    </div>}
+                    <a
+                        href={scholarship.link}
+                        style={{
+                            marginTop: "auto",
+                        }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.lmLink}
+                    >
+                        Learn More
+                    </a>
+                </div>
             </div>
           ))}
         </div>
