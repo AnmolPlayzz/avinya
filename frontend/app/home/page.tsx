@@ -1,9 +1,9 @@
 import { getCurrentSession, invalidateSession, deleteSessionTokenCookie } from "@/lib/session";
 import { redirect } from "next/navigation";
-import Loader from "@/components/library/loader/loader";
+import {logout} from "@/lib/actions";
 
 export default async function DashboardPage() {
-    const { user, session } = await getCurrentSession();
+    const { user, } = await getCurrentSession();
 
     // Protect this page
     if (!user) {
@@ -14,14 +14,6 @@ export default async function DashboardPage() {
         <div className="flex min-h-screen flex-col p-6">
             <header className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold">Dashboard</h1>
-                <form action={logout}>
-                    <button
-                        type="submit"
-                        className="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-                    >
-                        Sign out
-                    </button>
-                </form>
             </header>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -39,17 +31,7 @@ export default async function DashboardPage() {
                     </div>
                 )}
             </div>
-            <Loader />
         </div>
     );
 }
 
-async function logout() {
-    "use server";
-    const { session } = await getCurrentSession();
-    if (session) {
-        await invalidateSession(session.id);
-        await deleteSessionTokenCookie();
-    }
-    redirect("/login");
-}

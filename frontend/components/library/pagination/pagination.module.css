@@ -4,7 +4,7 @@
     justify-content: center;
     gap: 8px;
 
-    margin: 20px 0;
+    margin: 5px 10;
 }
 
 .navButton:hover:not(:disabled) {

@@ -2,24 +2,28 @@
 import styles from "./navbar.module.css";
 import Image from "next/image";
 import icon from "@/public/icons/navbar/j2jicon.png"
-import home from "@/public/icons/navbar/home.svg"
 import Link from "next/link";
 
 import menu from "@/public/icons/navbar/menu.svg"
 import cross from "@/public/icons/navbar/cross.svg"
 
 import {usePathname} from "next/navigation";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import Button from "@/components/library/buttons/button";
+import {logout} from "@/lib/actions";
 type LinkType = {
     href: string,
     text: string
 }
-export default function NavBar(links: { links: LinkType[] }) {
+export default function NavBar({links, loggedIn}: { links: LinkType[], loggedIn: boolean }) {
     const path = usePathname()
     const [isOpen, setIsOpen] = useState<boolean>(false);
     function checkUrl(url: string): boolean {
         return path.startsWith(url)
     }
+    useEffect(() => {
+        setIsOpen(false)
+    }, [path])
     return (<>
             <div className={styles.navBar}>
                 <Link href={"/"} className={styles.leftBox}>
@@ -28,16 +32,21 @@ export default function NavBar(links: { links: LinkType[] }) {
                     }}/>
                 </Link>
                 <div className={styles.centerBox}>
-                    {links.links.map((link:LinkType ) => (
+                    {links.map((link:LinkType ) => (
                         <Link key={link.href} className={checkUrl(link.href) ? `${styles.link} ${styles.active}` : styles.link}
                               href={link.href}>{link.text}</Link>
                     ))}
                 </div>
-                <Link href="/home" className={styles.rightBox}>
-                    <Image style={{
-                        opacity: 0.7
-                    }} src={home} alt={"Home"} width={20} height={20}/>
-                </Link>
+                {!loggedIn ? <Link style={{
+                    width: "100px",
+                }} href="/home" className={styles.rightBox}>
+                    Sign In
+                </Link> : <button style={{
+                    backgroundColor: "rgba(255,153,153,0.24)",
+                    border: "1px solid rgba(255,153,153,0.24)",
+                    width: "100px",
+                }} onClick={logout} className={styles.rightBox}>Sign Out</button>}
+
                 <div onClick={() => {
                     setIsOpen((v) => !v)
                 }} className={`${styles.mob} ${styles.rightBox} ${isOpen ? styles.menuActive : ""}`}>
@@ -46,20 +55,18 @@ export default function NavBar(links: { links: LinkType[] }) {
                 </div>
                 <div className={isOpen ? `${styles.mobileLinkBox} ${styles.activeMd}` : `${styles.mobileLinkBox}`}>
                     <div className={styles.linkList}>
-                        <Link className={checkUrl("/reclaim") ? `${styles.link} ${styles.active}` : styles.link}
-                              href="/reclaim">Reclaim</Link>
-                        <Link className={checkUrl("/inventory") ? `${styles.link} ${styles.active}` : styles.link}
-                              href="/inventory">Canteen</Link>
-                        <Link className={checkUrl("/scholarships") ? `${styles.link} ${styles.active}` : styles.link}
-                              href="/scholarships">Scholarships</Link>
-                        <Link className={checkUrl("/nutrients") ? `${styles.link} ${styles.active}` : styles.link}
-                          href="/nutrients">NutriScan</Link>
+                        {links.map((link:LinkType ) => (
+                            <Link key={link.href} className={checkUrl(link.href) ? `${styles.link} ${styles.active}` : styles.link}
+                                  href={link.href}>{link.text}</Link>
+                        ))}
                     </div>
-                    <Link href="/home" className={styles.homeIcon}>
-                        <Image style={{
-                            opacity: 0.7
-                        }} src={home} alt={"Home"} width={20} height={20}/>
-                    </Link>
+                    {!loggedIn ? <Link href="/home" className={styles.homeIcon}>
+                        Sign In
+                    </Link> : <button style={{
+                        backgroundColor: "rgba(255,153,153,0.24)",
+                        border: "1px solid rgba(255,153,153,0.24)",
+                    }} onClick={logout} className={styles.homeIcon}>Sign Out</button>}
+
                 </div>
             </div>
             <div onClick={() => setIsOpen((v) => !v)}

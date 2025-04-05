@@ -3,11 +3,13 @@ import { useState } from "react";
 import styles from "./page.module.css"
 import { scholarships } from "./scholarship";
 import Image from "next/image";
-import Button from "@/components/library/buttons/button";
-import Badge from "@/components/library/badges/badges";
+
+import Pagination from "@/components/library/pagination/pagination";
 
 const ScholarshipPage = () => {
   const [error,] = useState<string | null>(null);
+  const [filterData, setFilterData] = useState<any[]>(scholarships);
+  const [currentPage, setCurrentPage] = useState(1);
 
   if (error) {
     return (
@@ -16,6 +18,20 @@ const ScholarshipPage = () => {
       </div>
     );
   }
+
+  // Calculate pagination data
+  const componentsPerPage = 6 ;
+  const totalPages = Math.ceil(filterData.length / componentsPerPage);
+
+  // Get current components
+  const indexOfLastComponent = currentPage * componentsPerPage;
+  const indexOfFirstComponent = indexOfLastComponent - componentsPerPage;
+  const currentComponents = filterData.slice(indexOfFirstComponent, indexOfLastComponent);
+
+  const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+      console.log(`Page changed to ${page}`);
+  };
 
   return (
     <div className={styles.main}>
@@ -29,7 +45,20 @@ const ScholarshipPage = () => {
             maxWidth: "1200px",
 
         }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {scholarships.map((scholarship, index) => (
+          <div style={{
+              position: "fixed",
+              left: "50%",
+              bottom: "20px",
+              transform: "translate(-50%, 0)",
+              zIndex: "40",
+              backdropFilter: "blur(10px)",
+              backgroundColor: "rgba(21,21,21,0.73)",
+              borderRadius: "5px",
+              border: "1px solid rgba(63, 63, 63, 0.73)",
+          }}>
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          </div>
+            {currentComponents.map((scholarship, index) => (
             <div
               key={index}
               className={styles.card}

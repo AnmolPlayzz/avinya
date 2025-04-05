@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const Chat = () => {
     const [message, setMessage] = useState('');
-    const [response, setResponse] = useState('');
+    const [, setResponse] = useState('');
     const [chatHistory, setHistory] = useState([]);
     const [chatbotId, setChatbotId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
