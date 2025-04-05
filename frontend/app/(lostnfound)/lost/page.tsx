@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
-import { Navbar } from "@/components/Navbar";
 
 interface LostItem {
   id: number;
@@ -29,7 +28,7 @@ const LostPage = () => {
     const addLostItem = async (e) => {
         e.preventDefault()
         try {
-        const response = await axios.post("http://localhost:5000/lost-items", lostItem);
+        const response = await axios.post("https://avinya-iv0j.onrender.com/lost-items", lostItem);
         console.log(response.data);
         } catch (err: any) {
         console.error("Error adding lost item:", err.message || "An error occurred while adding the lost item.");
@@ -44,7 +43,6 @@ const LostPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-    <Navbar />
       <h1 className="text-3xl font-bold text-center mb-6">Lost Items</h1>
       <div className="bg-white shadow-md rounded-lg p-6">
         <form className="space-y-4">

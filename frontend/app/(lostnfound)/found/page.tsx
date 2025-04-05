@@ -17,7 +17,7 @@ const FoundPage = () => {
   useEffect(() => {
     const fetchLostItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/lost-items');
+        const response = await axios.get('https://avinya-iv0j.onrender.com/lost-items');
         const data: LostItem[] = response.data;
         setLostItems(data);
       } catch (err: any) {
