@@ -12,6 +12,7 @@ type ButtonProps = {
   height?: number;
   to?: string;
   newTab?: boolean;
+  disabled: boolean
 };
 
 export default function Button({
@@ -19,6 +20,7 @@ export default function Button({
   onClick,
   variant,
   width,
+                                 disabled,
   height, to, newTab,
 }: ButtonProps) {
   return (
@@ -31,6 +33,7 @@ export default function Button({
     >
       {variant!="Link" ? <button
           onClick={onClick}
+          disabled={disabled}
           className={`${styles.button} ${variant ? styles[variant] : ''}`}
       >
         <span style={{
