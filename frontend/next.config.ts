@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
                 hostname: 's3-ap-southeast-1.amazonaws.com',
                 pathname: '/cdn.buddy4study.com/static/scholarship_logo/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'res.cloudinary.com',
+                pathname: '/dh6u0utj8/**',
+            },
         ],
     },
 }
