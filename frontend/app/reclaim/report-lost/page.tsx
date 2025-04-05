@@ -2,22 +2,27 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import SingleInput from "@/components/library/Inputs/SingleInput/singleInput";
 import styles from "./lostPage.module.css";
 import Button from "@/components/library/buttons/button";
 
-interface LostItem {
+interface ItemData {
   name: string;
   description: string;
-  dateLost: string;
+  dateLost?: string;
+  dateFound?: string;
   location: string;
 }
 
-const LostPage = () => {
-  const [lostItem, setLostItem] = useState<LostItem>({
+const ReportPage = () => {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<"lost" | "found">("lost");
+  const [itemData, setItemData] = useState<ItemData>({
     name: "",
     description: "",
     dateLost: "",
+    dateFound: "",
     location: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -25,7 +30,7 @@ const LostPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setLostItem((prev) => ({
+    setItemData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -36,64 +41,106 @@ const LostPage = () => {
     if (file) setImageFile(file);
   };
 
-  const addLostItem = async (e: React.FormEvent) => {
+  const handleTabChange = (tab: "lost" | "found") => {
+    setActiveTab(tab);
+    // Reset form when changing tabs
+    setItemData({
+      name: "",
+      description: "",
+      dateLost: "",
+      dateFound: "",
+      location: "",
+    });
+    setImageFile(null);
+    setSuccessMessage("");
+  };
+
+  const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("name", lostItem.name);
-      formData.append("description", lostItem.description);
-      formData.append("dateLost", lostItem.dateLost);
-      formData.append("location", lostItem.location);
+      formData.append("name", itemData.name);
+      formData.append("description", itemData.description);
+      formData.append("location", itemData.location);
+      
+      if (activeTab === "lost") {
+        formData.append("dateLost", itemData.dateLost || "");
+      } else {
+        formData.append("dateFound", itemData.dateFound || "");
+      }
+      
       if (imageFile) {
         formData.append("image", imageFile);
       }
 
-      const response = await axios.post(
-        "https://avinya-iv0j.onrender.com/lost-items",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const endpoint = activeTab === "lost" 
+        ? "https://avinya-iv0j.onrender.com/lost-items"
+        : "https://avinya-iv0j.onrender.com/found-item";
+
+      const response = await axios.post(endpoint, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log(response.data);
-      setSuccessMessage("Lost item added successfully!");
+      setSuccessMessage(`${activeTab === "lost" ? "Lost" : "Found"} item reported successfully!`);
+      
+      // Navigate after a short delay to show success message
+      setTimeout(() => {
+        router.push(activeTab === "lost" ? "/reclaim/report-lost" : "/reclaim/report-found");
+      }, 2000);
     } catch (err: any) {
       console.error(
-        "Error adding lost item:",
-        err.message || "An error occurred while adding the lost item."
+        `Error adding ${activeTab} item:`,
+        err.message || `An error occurred while adding the ${activeTab} item.`
       );
     }
-
-    // Reset state
-    setLostItem({
-      name: "",
-      description: "",
-      dateLost: "",
-      location: "",
-    });
-    setImageFile(null);
   };
+
+  const dateField = activeTab === "lost" ? "dateLost" : "dateFound";
+  const dateLabel = activeTab === "lost" ? "Date Lost:" : "Date Found:";
+  const isFormValid = itemData.name && 
+                      itemData.description && 
+                      (activeTab === "lost" ? itemData.dateLost : itemData.dateFound) && 
+                      itemData.location;
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Report Lost Item</h1>
+
+      <h1 className={styles.title}>
+        {activeTab === "lost" ? "Report Lost Item" : "Report Found Item"}
+      </h1>
+      <div className={styles.tabContainer}>
+        <button 
+          className={`${styles.button} ${activeTab === "lost" ? styles.active : ""}`}
+          onClick={() => handleTabChange("lost")}
+        >
+          Report Lost
+        </button>
+        <button 
+          className={`${styles.button} ${activeTab === "found" ? styles.active : ""}`}
+          onClick={() => handleTabChange("found")}
+        >
+          Report Found
+        </button>
+      </div>
       <p className={styles.subtitle}>
-        Please fill out the form below to report a lost item.
+        Please fill out the form below to report a {activeTab} item.
       </p>
+      
       <div className={styles.formWrapper}>
         {successMessage && (
           <div className={styles.successMessage}>{successMessage}</div>
         )}
-        <form className={styles.form} onSubmit={addLostItem}>
+        <form className={styles.form} onSubmit={submitForm}>
           <div>
             <label htmlFor="name" className={styles.label}>Name:</label>
             <SingleInput
               type="text"
+              name="name"
               holder="Enter the item's name"
-              value={lostItem.name}
+              value={itemData.name}
               onChange={handleInputChange}
             />
           </div>
@@ -102,16 +149,16 @@ const LostPage = () => {
             <SingleInput
               type="text"
               holder="Provide a brief description"
-              value={lostItem.description}
+              value={itemData.description}
               onChange={handleInputChange}
             />
           </div>
           <div>
-            <label htmlFor="dateLost" className={styles.label}>Date Lost:</label>
+            <label htmlFor={dateField} className={styles.label}>{dateLabel}</label>
             <SingleInput
               type="datetime-local"
               holder=""
-              value={lostItem.dateLost}
+              value={activeTab === "lost" ? itemData.dateLost : itemData.dateFound}
               onChange={handleInputChange}
             />
           </div>
@@ -119,8 +166,8 @@ const LostPage = () => {
             <label htmlFor="location" className={styles.label}>Location:</label>
             <SingleInput
               type="text"
-              holder="Enter the location where the item was lost"
-              value={lostItem.location}
+              holder={`Enter the location where the item was ${activeTab}`}
+              value={itemData.location}
               onChange={handleInputChange}
             />
           </div>
@@ -137,8 +184,8 @@ const LostPage = () => {
           <Button
             text="Submit"
             variant="Primary"
-            onClick={addLostItem}
-            disabled={!lostItem.name || !lostItem.description || !lostItem.dateLost || !lostItem.location}
+            onClick={submitForm}
+            disabled={!isFormValid}
           />
         </form>
       </div>
@@ -146,4 +193,4 @@ const LostPage = () => {
   );
 };
 
-export default LostPage;
+export default ReportPage;

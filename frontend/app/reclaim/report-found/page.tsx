@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Loader from "@/components/library/loader/loader";
@@ -6,6 +7,7 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import Button from "@/components/library/buttons/button";
 import Dialog from "@/components/library/dialog-box/dialog-box";
+
 interface LostItem {
   id: number;
   name: string;

@@ -82,3 +82,29 @@
     border: 1px solid #444;
     width: 100%;
   }
+
+  .button {
+    font-weight: 200;
+    position: relative;
+}
+
+.button::after {
+    position: absolute;
+    content: "";
+    bottom: -6px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 0px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, rgba(195, 84, 255, 1) 8.63%, rgba(106, 127, 246, 1) 50%, rgba(92, 255, 192, 1) 86.8%);
+    height: 3px;
+    transition: all 0.2s ease;
+}
+
+.button.active {
+    font-weight: 900;
+}
+
+.button.active::after {
+    width: 40px;
+}
