@@ -41,7 +41,11 @@ const FoundPage = () => {
         const data: LostItem[] = response.data.data;
         setLostItems(data);
       } catch (err:  unknown | never ) {
-        setError(err.message || 'An error occurred while fetching lost items.');
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An error occurred while fetching lost items.');
+        }
       } finally {
         setLoading(false);
       }
