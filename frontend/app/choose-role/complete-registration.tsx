@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Button from "@/components/library/buttons/button";
 
 export default function CompleteRegistration({ tempId }: { tempId: string }) {
     const [isLoading, setIsLoading] = useState(false);
@@ -32,22 +33,29 @@ export default function CompleteRegistration({ tempId }: { tempId: string }) {
     }
 
     return (
-        <div className="flex flex-col space-y-4">
-            <button
+        <div className="flex flex-row gap-2" style={{
+            marginTop: "10px"
+        }}>
+            <Button
+                text={"Register as User"}
                 onClick={() => registerWithRole("user")}
                 disabled={isLoading}
-                className="w-full rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-                Register as User
-            </button>
-
-            <button
+                variant="Primary"
+                width={160}
+                height={40}
+            />
+            <p style={{
+                margin: "auto 0",
+            }}>or</p>
+            <Button
+                text="Register as Admin"
                 onClick={() => registerWithRole("admin")}
                 disabled={isLoading}
-                className="w-full rounded-md bg-gray-800 px-4 py-3 text-white hover:bg-gray-900 disabled:opacity-50"
-            >
-                Register as Admin
-            </button>
+                variant={"Secondary"}
+                width={160}
+                height={40}
+
+            />
         </div>
     );
 }
