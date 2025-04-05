@@ -30,6 +30,8 @@ export default function NavBar() {
                           href="/inventory">Canteen</Link>
                     <Link className={checkUrl("/scholarships") ? `${styles.link} ${styles.active}` : styles.link}
                           href="/scholarships">Scholarships</Link>
+                    <Link className={checkUrl("/nutrients") ? `${styles.link} ${styles.active}` : styles.link}
+                          href="/nutrients">NutriScan</Link>
                 </div>
                 <Link href="/home" className={styles.rightBox}>
                     <Image style={{

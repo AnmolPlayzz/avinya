@@ -1,131 +1,284 @@
 "use client";
 import axios from "axios";
-import { useRef, useState } from "react";
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import Webcam from 'react-webcam'
+import { useRef, useState, useCallback, useEffect } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import Webcam from "react-webcam";
+import styles from "./NutritionPage.module.css";
+import Button from "@/components/library/buttons/button";
+import SingleInput from "@/components/library/Inputs/SingleInput/singleInput";
 
 const NutritionPage = () => {
   const [barcode, setBarcode] = useState<string>("");
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [facingMode, setFacingMode] = useState<string>("environment");
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
+  const [isCapturing, setIsCapturing] = useState<boolean>(false);
+  
+  const webcamRef = useRef<Webcam>(null);
+
+  // Get available camera devices
+  useEffect(() => {
+    async function getDevices() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        setDevices(videoDevices);
+        
+        // Set default device if available
+        if (videoDevices.length > 0) {
+          setSelectedDeviceId(videoDevices[0].deviceId);
+        }
+      } catch (error) {
+        console.error("Error getting media devices:", error);
+      }
+    }
+    
+    getDevices();
+  }, []);
 
   const fetchNutrition = async () => {
+    if (!barcode || barcode.trim() === "") {
+      setError("Please enter a valid barcode.");
+      return;
+    }
+    
+    setIsCapturing(true);
+
     try {
       const response = await axios.get(
-        `https://world.openfoodfacts.org/api/v2/product/${barcode}.json`
+        `https://world.openfoodfacts.org/api/v2/product/${barcode.trim()}.json`
       );
       console.log(response.data);
-      setData(response.data);
-      setError(null); // Clear any previous errors
+      
+      if (response.data.status === 0) {
+        setError("Product not found. Please try another barcode.");
+        setData(null);
+      } else {
+        setData(response.data);
+        setError(null);
+      }
     } catch (error: any) {
       console.error("Error fetching nutrition data:", error);
-      setData(null); // Clear previous data on error
+      setData(null);
       setError(
         error.message || "Failed to fetch nutrition data. Please try again."
       );
+    } finally {
+      setIsCapturing(false);
     }
   };
 
-  const webcamRef = useRef(null)  
-    const sendToGemini = async () => {
-      const imageSrc = webcamRef.current.getScreenshot()
-  
-      const genAI = new GoogleGenerativeAI("AIzaSyC8nH8h04EFA8uyK-BfPIHowCJA2uZHly8")
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
-  
+  const sendToGemini = useCallback(async () => {
+    if (!webcamRef.current) {
+      setError("Camera not initialized. Please refresh the page.");
+      return;
+    }
+
+    setIsCapturing(true);
+    
+    try {
+      const imageSrc = webcamRef.current.getScreenshot();
+      
+      if (!imageSrc) {
+        setError("Failed to capture image. Please try again.");
+        setIsCapturing(false);
+        return;
+      }
+
+      const genAI = new GoogleGenerativeAI("AIzaSyC8nH8h04EFA8uyK-BfPIHowCJA2uZHly8");
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
       const parts = [
         {
-          text: 'return only the string of barcode from the image',
+          text: "Find and return only the barcode number from this image. Return just the digits with no additional text or explanations.",
         },
         {
           inlineData: {
-            mimeType: 'image/jpeg',
-            data: imageSrc.split(',')[1],
+            mimeType: "image/jpeg",
+            data: imageSrc.split(",")[1],
           },
         },
-      ]
-  
-      try {
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts }],
-        })
-        const response = await result.response
-        console.log('Gemini response:', response.text())
-        setBarcode(response.text())
-        await fetchNutrition()
-      } catch (error) {
-        console.error('Error sending to Gemini:', error)
+      ];
+
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts }],
+      });
+      const response = await result.response;
+      const text = await response.text();
+      console.log("Gemini response:", text);
+      
+      // Extract only numbers from the response
+      const extractedBarcode = text.replace(/\D/g, '');
+      
+      if (!extractedBarcode) {
+        setError("No barcode detected. Please try again with a clearer image.");
+      } else {
+        setBarcode(extractedBarcode);
+        // Auto-fetch nutrition data after successful barcode capture
+        setTimeout(() => {
+          fetchNutrition();
+        }, 300);
       }
+    } catch (error: any) {
+      console.error("Error sending to Gemini:", error);
+      setError("Failed to process the image. Please try again.");
+    } finally {
+      setIsCapturing(false);
     }
+  }, [webcamRef]);
+
+  const toggleCamera = () => {
+    setFacingMode(facingMode === "environment" ? "user" : "environment");
+  };
+
+  const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDeviceId(e.target.value);
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      { barcode === "" && (
-        <div>
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            className="mb-4 rounded-lg shadow-md size-60"
-            />
-          <button onClick={sendToGemini} className="border-2 border-gray-500 text-white font-bold py-2 px-2 rounded mb-4">
-            Get Barcode
-          </button>
+    <div className={styles.main}>
+      <h1 className={styles.head}>Get Nutrition</h1>
+      
+      <div className={styles.webcamSection}>
+        <Webcam
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          mirrored={facingMode === "user"} // Only mirror for selfie camera
+          className={styles.webcam}
+          videoConstraints={{
+            facingMode: selectedDeviceId ? undefined : facingMode,
+            deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            aspectRatio: 4/3
+          }}
+        />
+        
+        <div className={styles.cameraControls}>
+          {devices.length > 1 && (
+            <select 
+              value={selectedDeviceId} 
+              onChange={handleDeviceChange}
+              className={styles.select}
+            >
+              {devices.map((device) => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || `Camera ${devices.indexOf(device) + 1}`}
+                </option>
+              ))}
+            </select>
+          )}
+          
+          <Button
+            text="Switch Camera"
+            onClick={toggleCamera}
+            variant="Secondary"
+          />
+        </div>
+        
+        <Button
+          text={isCapturing ? "Processing..." : "Scan Barcode"}
+          onClick={sendToGemini}
+          variant="Primary"
+          disabled={isCapturing}
+        />
       </div>
-    )}
-      <h1 className="text-2xl font-bold mb-4">Nutrition Information</h1>
-      <div className="flex items-center mb-4">
-        <input
+
+      <h1 className={styles.heading}>Nutrition Information</h1>
+
+      <div className={styles.flexContainer}>
+        <SingleInput
           type="text"
           value={barcode}
           onChange={(e) => setBarcode(e.target.value)}
-          placeholder="Enter barcode"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          required
+          holder="Enter barcode here"
         />
-        <button
+        <Button
+          text={isCapturing ? "Fetching..." : "Get Nutrition"}
           onClick={fetchNutrition}
-          className="border-2 border-gray-500 text-white font-bold py-2 px-2 rounded"
-        >
-          Get Info
-        </button>
+          variant="Primary"
+          disabled={isCapturing || !barcode}
+        />
       </div>
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <strong className="font-bold">Error!</strong>
-          <span className="block sm:inline">{error}</span>
-        </div>
-      )}
+      {error && <div className={styles.errorBox}>{error}</div>}
 
       {data && data.product && (
-        <div className="flex shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div>
+        <div className={styles.productCard}>
+          {data.product.image_url && (
             <img
-            src={data.product.image_url}
-            alt={data.product.product_name}
-            className="mb-4 rounded"
+              src={data.product.image_url}
+              alt={data.product.product_name || "Product image"}
+              className={styles.productImage}
             />
+          )}
+          <div className={styles.productInfo}>
+            <h2 className={styles.subHeading}>
+              {data.product.product_name || "Unknown Product"}
+            </h2>
+            <p>
+              <strong>Brand:</strong> {data.product.brands || "N/A"}
+            </p>
+            <p>
+              <strong>Ingredients:</strong>{" "}
+              {data.product.ingredients_text || "Not available"}
+            </p>
+            
+            <h3 className={styles.nutritionHeading}>Nutrition Facts</h3>
+            <div className={styles.nutritionGrid}>
+              <p>
+                <strong>Calories:</strong>{" "}
+                {data.product.nutriments?.energy_value 
+                  ? `${data.product.nutriments.energy_value} ${data.product.nutriments.energy_unit || 'kcal'}`
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Protein:</strong>{" "}
+                {data.product.nutriments?.proteins 
+                  ? `${data.product.nutriments.proteins}${data.product.nutriments.proteins_unit || 'g'}` 
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Fat:</strong>{" "}
+                {data.product.nutriments?.fat 
+                  ? `${data.product.nutriments.fat}${data.product.nutriments.fat_unit || 'g'}` 
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Carbs:</strong>{" "}
+                {data.product.nutriments?.carbohydrates 
+                  ? `${data.product.nutriments.carbohydrates}${data.product.nutriments.carbohydrates_unit || 'g'}` 
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Sugar:</strong>{" "}
+                {data.product.nutriments?.sugars 
+                  ? `${data.product.nutriments.sugars}${data.product.nutriments.sugars_unit || 'g'}` 
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Fiber:</strong>{" "}
+                {data.product.nutriments?.fiber 
+                  ? `${data.product.nutriments.fiber}${data.product.nutriments.fiber_unit || 'g'}` 
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Salt:</strong>{" "}
+                {data.product.nutriments?.salt 
+                  ? `${data.product.nutriments.salt}${data.product.nutriments.salt_unit || 'g'}` 
+                  : "N/A"}
+              </p>
             </div>
-            <div>
-
-          <h1 className="text-xl font-bold mb-2">{data.product.product_name}</h1>
-          <p className="mb-2">
-            <span className="font-bold">Ingredients:</span> {data.product.ingredients_text}
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Calories:</span> {data.product.nutriments?.energy} KJ
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Protein:</span> {data.product.nutriments?.proteins}
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Fat:</span> {data.product.nutriments?.fat}{data.product.nutriments?.fat_unit}
-          </p>
-          <p className="mb-2">
-            <span className="font-bold">Carbohydrates:</span> {data.product.nutriments?.carbohydrates}
-          </p>
-        </div>
+            
+            {data.product.nutriscore_grade && (
+              <p>
+                <strong>Nutri-Score:</strong> {data.product.nutriscore_grade.toUpperCase()}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
