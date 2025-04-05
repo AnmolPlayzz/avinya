@@ -75,13 +75,10 @@ const InventoryPage = () => {
   const isTablet = typeof window !== "undefined" && window.innerWidth < 1024;
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.heading}>Inventory Prediction</h1>
-      <div
-        className={`${styles.grid} ${
-          isMobile ? styles.grid1 : isTablet ? styles.grid2 : styles.grid3
-        }`}
-      >
+    <div className={styles.main}>
+      <h1 className={styles.head}>Inventory Prediction</h1>
+      <div>
+        <div className={styles.menu}>
         <SelectMenu
           defaultValue="regular"
           options={dayTypeOptions}
@@ -90,6 +87,10 @@ const InventoryPage = () => {
             setPredictions(null); 
           }}
         />
+        </div>
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+      >
         {Object.entries(inventory).map(([item, value]) => (
           <div key={item} className={styles.card}>
             <label htmlFor={item} className={styles.label}>
@@ -103,6 +104,7 @@ const InventoryPage = () => {
             />
           </div>
         ))}
+      </div>
       </div>
 
       <div className={styles.center}>
