@@ -52,8 +52,8 @@ export default async function RootLayout({
       <body className={roboto.className}>
       {!user && <NavBar links={linksUser} />  }
 
-      {user.role == "user" && <NavBar links={linksUser} />  }
-        {user.role == "admin" && <NavBar links={linksaAdmin} />  }
+      {user ? user.role == "user" && <NavBar links={linksUser} /> : null }
+        {user ? user.role == "admin" && <NavBar links={linksaAdmin} /> : null }
         {children}
       </body>
     </html>
