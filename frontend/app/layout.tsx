@@ -28,6 +28,10 @@ export default async function RootLayout({
     {
       href: "/nutrients",
       text: "NutriScan"
+    },
+    {
+      href: "/events",
+      text: "Events"
     }
   ];
 
@@ -36,6 +40,10 @@ export default async function RootLayout({
       href: "/inventory",
       text: "Canteen"
     },
+    {
+      href: "/event-management",
+      text: "Event"
+    }
   ];
 
 
