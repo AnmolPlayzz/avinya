@@ -144,8 +144,6 @@ const update_item = asyncHandler(async (req, res) => {
     }
 });
 
-
-
 const delete_item = asyncHandler(async (req, res) => {
     const { id } = req.body;
 

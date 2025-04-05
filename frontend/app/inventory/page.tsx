@@ -1,76 +1,138 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import SingleInput from "@/components/library/Inputs/SingleInput/singleInput";
+import Button from "@/components/library/buttons/button";
+import styles from "./InventoryPage.module.css";
+import SelectMenu from "@/components/library/select-menus/select-menu";
+
+const defaultInventory = {
+  rice: 0,
+  vegetables: 0,
+  spices: 0,
+  chicken: 0,
+  lentils: 0,
+  flour: 0,
+  oil: 0,
+  paneer: 0,
+  butter: 0,
+  onions: 0,
+  fish: 0,
+  yogurt: 0,
+  sugar: 0,
+  fruits: 0,
+};
+
+const dayTypeOptions = [
+  { value: "regular", label: "Regular" },
+  { value: "fest", label: "Fest" },
+  { value: "exam", label: "Exam" },
+  { value: "weekend", label: "Weekend" },
+  { value: "event_weekend", label: "Event Weekend" },
+  { value: "event_weekday", label: "Event Weekday" },
+];
 
 const InventoryPage = () => {
-  const [predictions, setPredictions] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState<boolean>(true);
+  const [inventory, setInventory] = useState<Record<string, number>>(defaultInventory);
+  const [dayType, setDayType] = useState<string>("regular");
+  const [predictions, setPredictions] = useState<Record<string, number> | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sampleData = {
-    day_type: "regular",
-    inventory: {
-      rice: 100,
-      vegetables: 80,
-      spices: 20,
-      chicken: 50,
-      lentils: 40,
-      flour: 60,
-      oil: 30,
-      paneer: 25,
-      butter: 15,
-      onions: 40,
-      fish: 30,
-      yogurt: 35,
-      sugar: 25,
-      fruits: 45,
-    },
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, item: string) => {
+    const value = parseFloat(e.target.value);
+    setPredictions(null);
+    setInventory((prev) => ({
+      ...prev,
+      [item]: isNaN(value) ? 0 : value,
+    }));
   };
 
-  useEffect(() => {
-    const fetchPredictions = async () => {
-      try {
-        const response = await axios.post(
-          "https://python-backend-xiup.onrender.com/predict",
-          sampleData
-        );
-        setPredictions(response.data.predictions); // Assuming the API returns predictions in this format
-      } catch (err: any) {
-        setError(err.message || "An error occurred while fetching predictions.");
-      } finally {
-        setLoading(false);
-      }
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    setPredictions(null);
+
+    const payload = {
+      day_type: dayType,
+      inventory: inventory,
     };
 
-    fetchPredictions();
-  }, []);
+    try {
+      const response = await axios.post(
+        "https://python-backend-xiup.onrender.com/predict",
+        payload
+      );
+      setPredictions(response.data.predictions);
+    } catch (err: any) {
+      setError(err.message || "An error occurred while fetching predictions.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  if (loading) {
-    return <div className="text-center text-lg font-semibold">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-red-500 text-lg font-semibold">
-        Error: {error}
-      </div>
-    );
-  }
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isTablet = typeof window !== "undefined" && window.innerWidth < 1024;
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Predicted Inventory</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.entries(predictions).map(([item, quantity]) => (
-          <div
-            key={item}
-            className="bg-white shadow-md rounded-lg p-6 text-center"
-          >
-            <h2 className="text-xl font-semibold mb-2">{item}</h2>
-            <p className="text-gray-600">Quantity: {quantity}</p>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Inventory Prediction</h1>
+      <div
+        className={`${styles.grid} ${
+          isMobile ? styles.grid1 : isTablet ? styles.grid2 : styles.grid3
+        }`}
+      >
+        <SelectMenu
+          defaultValue="regular"
+          options={dayTypeOptions}
+          onChange={(value) => {
+            setDayType(value);
+            setPredictions(null); 
+          }}
+        />
+        {Object.entries(inventory).map(([item, value]) => (
+          <div key={item} className={styles.card}>
+            <label htmlFor={item} className={styles.label}>
+              {item} (in kg)
+            </label>
+            <SingleInput
+              type="number"
+              holder={`Enter quantity for ${item}`}
+              value={value}
+              onChange={(e) => handleChange(e, item)}
+            />
           </div>
         ))}
       </div>
+
+      <div className={styles.center}>
+        <Button
+          disabled={loading}
+          variant="Primary"
+          onClick={handleSubmit}
+          text={loading ? "Submitting..." : "Submit"}
+        />
+      </div>
+
+      {error && <div className={styles.error}>Error: {error}</div>}
+
+      {predictions && (
+        <div className={styles.result}>
+          <h2 className={styles.resultHeading}>Predicted Inventory</h2>
+          <div
+            className={`${styles.grid} ${
+              isMobile ? styles.grid1 : isTablet ? styles.grid2 : styles.grid3
+            }`}
+          >
+            {Object.entries(predictions).map(([item, quantity]) => (
+              <div key={item} className={styles.resultCard}>
+                <h3 className={styles.label}>{item}</h3>
+                <p>Predicted Quantity: {quantity} plates</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
