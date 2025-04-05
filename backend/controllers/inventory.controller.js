@@ -50,7 +50,6 @@ const add_item = asyncHandler(async (req, res) => {
     }
 });
 
-
 const update_item = asyncHandler(async (req, res) => {
     const { id, name, quantity, barcode, type, price } = req.body;
     const imageFile = req.file;
@@ -59,24 +58,14 @@ const update_item = asyncHandler(async (req, res) => {
         throw new ApiError(400, 'Item ID is required for update!');
     }
 
-    // Check if item exists
-    const checkQuery = `SELECT * FROM inventory WHERE id = $1`;
-    const { rows } = await sql.query(checkQuery, [id]);
-
-    if (rows.length === 0) { // Corrected the check here
-        return res.status(404).json(new ApiError(404, 'Item not found!'));
-    }
-
-    const existingItem = rows[0];
-
     // Validate type if provided
     if (type && type !== 'food' && type !== 'item') {
         return res.status(400).json(new ApiError(400, 'Type must be either "food" or "item"!'));
     }
 
-    // Determine final type and handle barcode logic
-    const finalType = type || existingItem.type;
-    const finalBarcode = barcode !== undefined ? barcode : existingItem.barcode;
+    // Determine barcode logic based on type
+    const finalType = type;
+    const finalBarcode = barcode;
 
     if (finalType === 'item' && !finalBarcode) {
         return res.status(400).json(new ApiError(400, 'Barcode number is required for sealed pack items!'));
@@ -144,6 +133,11 @@ const update_item = asyncHandler(async (req, res) => {
 
     try {
         const result = await sql.query(updateQuery, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json(new ApiError(404, 'Item not found or nothing updated!'));
+        }
+
         res.status(200).json(new ApiResponse(200, result, 'Item updated successfully!'));
     } catch (error) {
         throw new ApiError(500, `Database error: ${error.message}`);
