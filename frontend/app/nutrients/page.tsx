@@ -1,6 +1,8 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import Webcam from 'react-webcam'
 
 const NutritionPage = () => {
   const [barcode, setBarcode] = useState<string>("");
@@ -24,8 +26,53 @@ const NutritionPage = () => {
     }
   };
 
+  const webcamRef = useRef(null)  
+    const sendToGemini = async () => {
+      const imageSrc = webcamRef.current.getScreenshot()
+  
+      const genAI = new GoogleGenerativeAI("AIzaSyC8nH8h04EFA8uyK-BfPIHowCJA2uZHly8")
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+  
+      const parts = [
+        {
+          text: 'return only the string of barcode from the image',
+        },
+        {
+          inlineData: {
+            mimeType: 'image/jpeg',
+            data: imageSrc.split(',')[1],
+          },
+        },
+      ]
+  
+      try {
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts }],
+        })
+        const response = await result.response
+        console.log('Gemini response:', response.text())
+        setBarcode(response.text())
+        await fetchNutrition()
+      } catch (error) {
+        console.error('Error sending to Gemini:', error)
+      }
+    }
+
   return (
     <div className="container mx-auto p-4">
+      { barcode === "" && (
+        <div>
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            className="mb-4 rounded-lg shadow-md size-60"
+            />
+          <button onClick={sendToGemini} className="border-2 border-gray-500 text-white font-bold py-2 px-2 rounded mb-4">
+            Get Barcode
+          </button>
+      </div>
+    )}
       <h1 className="text-2xl font-bold mb-4">Nutrition Information</h1>
       <div className="flex items-center mb-4">
         <input
@@ -53,7 +100,6 @@ const NutritionPage = () => {
 
       {data && data.product && (
         <div className="flex shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          
           <div>
             <img
             src={data.product.image_url}
@@ -79,8 +125,7 @@ const NutritionPage = () => {
           <p className="mb-2">
             <span className="font-bold">Carbohydrates:</span> {data.product.nutriments?.carbohydrates}
           </p>
-          <a href={data.product.link}>Product Page</a>
-            </div>
+        </div>
         </div>
       )}
     </div>

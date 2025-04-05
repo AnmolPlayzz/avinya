@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/genai": "^0.7.0",
+    "@google/generative-ai": "^0.24.0",
     "@neondatabase/serverless": "^1.0.0",
     "arctic": "^3.6.0",
     "axios": "^1.8.4",
@@ -17,7 +18,8 @@
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-webcam": "^7.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
