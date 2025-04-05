@@ -1,0 +1,46 @@
+@keyframes load {
+    0% {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+    33% {
+        transform: scaleX(1);
+        transform-origin: left;
+
+    }
+    66% {
+        transform: scaleX(1);
+        transform-origin: right;
+
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: right;
+
+    }
+}
+
+.loader {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 4px;
+    background: transparent;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.loader::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    transform: translateX(-180px);
+    width: 120px;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(195, 84, 255, 1) 8.63%, rgba(106, 127, 246, 1) 50%, rgba(92, 255, 192, 1) 86.8%);;
+    border-radius: 5px;
+    animation: load 1.5s cubic-bezier(0.87, 0, 0.13, 1) infinite;
+}

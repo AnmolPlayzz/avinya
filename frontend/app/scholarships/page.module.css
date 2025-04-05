@@ -7,7 +7,7 @@
     box-sizing: border-box;
     .head {
         font-size: 38px;
-        background: -webkit-linear-gradient(45deg, rgba(195, 84, 255, 1) 8.63%, rgba(106, 127, 246, 1) 50%, rgba(92, 255, 192, 1) 86.8%);
+        background: -webkit-linear-gradient(45deg, rgb(217, 160, 255) 8.63%, rgb(152, 166, 255) 50%, rgb(147, 255, 220) 86.8%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;

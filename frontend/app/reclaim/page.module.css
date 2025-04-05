@@ -1,0 +1,59 @@
+.header {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(66, 66, 66, 0.51);
+    background-color: rgba(59, 59, 59, 0.25);
+    max-width: 1200px;
+    padding: 24px;
+    color: white;
+    position: relative;
+    h1 {
+        font-size: 40px;
+        font-weight: 900;
+        width: fit-content;
+        position: relative;
+        margin-bottom: 0px;
+    }
+    p {
+        font-size: 18px;
+        font-weight: 200;
+        width: fit-content;
+        position: relative;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    padding: 0;
+    .action {
+        padding: 22px;
+        border-radius: 10px;
+        border: 1px solid rgba(66, 66, 66, 0.51);
+        background: rgba(68, 68, 68, 0.3);
+        transition: all 0.2s ease;
+
+        h2 {
+            font-size: 24px;
+            font-weight: 900;
+            width: fit-content;
+            margin-bottom: 0px;
+        }
+        p {
+            font-size: 16px;
+            font-weight: 200;
+            width: fit-content;
+        }
+    }
+    .action:hover {
+        background: rgba(68, 68, 68, 0.5);
+        transform: scale(1.02);
+    }
+    .action:active {
+        background: rgba(35, 35, 35, 0.5);
+        transform: scale(0.98);
+    }
+}
