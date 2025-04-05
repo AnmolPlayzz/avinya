@@ -107,7 +107,6 @@ const ReportPage = () => {
 
   return (
     <div className={styles.container}>
-
       <h1 className={styles.title}>
         {activeTab === "lost" ? "Report Lost Item" : "Report Found Item"}
       </h1>
@@ -138,7 +137,6 @@ const ReportPage = () => {
             <label htmlFor="name" className={styles.label}>Name:</label>
             <SingleInput
               type="text"
-              name="name"
               holder="Enter the item's name"
               value={itemData.name}
               onChange={handleInputChange}

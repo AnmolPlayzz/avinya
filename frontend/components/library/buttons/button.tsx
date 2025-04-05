@@ -6,7 +6,7 @@ import Link from "next/link";
 
 type ButtonProps = {
   text: string;
-  onClick: () => void;
+  onClick: any;
   variant?: 'Primary' | 'Secondary' | 'Outline' | 'Danger' | 'Link';
   width?: number;
   height?: number;

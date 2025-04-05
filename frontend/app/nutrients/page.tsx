@@ -43,7 +43,7 @@ const NutritionPage = () => {
       setError("Please enter a valid barcode.");
       return;
     }
-    
+
     setIsCapturing(true);
 
     try {
@@ -159,8 +159,8 @@ const NutritionPage = () => {
         
         <div className={styles.cameraControls}>
           {devices.length > 1 && (
-            <select 
-              value={selectedDeviceId} 
+            <select
+              value={selectedDeviceId}
               onChange={handleDeviceChange}
               className={styles.select}
             >
@@ -177,6 +177,8 @@ const NutritionPage = () => {
             text="Switch Camera"
             onClick={toggleCamera}
             variant="Secondary"
+            width={180}
+            height={40}
           />
         </div>
         
@@ -185,6 +187,8 @@ const NutritionPage = () => {
           onClick={sendToGemini}
           variant="Primary"
           disabled={isCapturing}
+          width={180}
+          height={40}
         />
       </div>
 
@@ -200,7 +204,9 @@ const NutritionPage = () => {
         <Button
           text={isCapturing ? "Fetching..." : "Get Nutrition"}
           onClick={fetchNutrition}
-          variant="Primary"
+          variant="Outline"
+          width={180}
+          height={40}
           disabled={isCapturing || !barcode}
         />
       </div>
@@ -227,53 +233,53 @@ const NutritionPage = () => {
               <strong>Ingredients:</strong>{" "}
               {data.product.ingredients_text || "Not available"}
             </p>
-            
+
             <h3 className={styles.nutritionHeading}>Nutrition Facts</h3>
             <div className={styles.nutritionGrid}>
               <p>
                 <strong>Calories:</strong>{" "}
-                {data.product.nutriments?.energy_value 
+                {data.product.nutriments?.energy_value
                   ? `${data.product.nutriments.energy_value} ${data.product.nutriments.energy_unit || 'kcal'}`
                   : "N/A"}
               </p>
               <p>
                 <strong>Protein:</strong>{" "}
-                {data.product.nutriments?.proteins 
-                  ? `${data.product.nutriments.proteins}${data.product.nutriments.proteins_unit || 'g'}` 
+                {data.product.nutriments?.proteins
+                  ? `${data.product.nutriments.proteins}${data.product.nutriments.proteins_unit || 'g'}`
                   : "N/A"}
               </p>
               <p>
                 <strong>Fat:</strong>{" "}
-                {data.product.nutriments?.fat 
-                  ? `${data.product.nutriments.fat}${data.product.nutriments.fat_unit || 'g'}` 
+                {data.product.nutriments?.fat
+                  ? `${data.product.nutriments.fat}${data.product.nutriments.fat_unit || 'g'}`
                   : "N/A"}
               </p>
               <p>
                 <strong>Carbs:</strong>{" "}
-                {data.product.nutriments?.carbohydrates 
-                  ? `${data.product.nutriments.carbohydrates}${data.product.nutriments.carbohydrates_unit || 'g'}` 
+                {data.product.nutriments?.carbohydrates
+                  ? `${data.product.nutriments.carbohydrates}${data.product.nutriments.carbohydrates_unit || 'g'}`
                   : "N/A"}
               </p>
               <p>
                 <strong>Sugar:</strong>{" "}
-                {data.product.nutriments?.sugars 
-                  ? `${data.product.nutriments.sugars}${data.product.nutriments.sugars_unit || 'g'}` 
+                {data.product.nutriments?.sugars
+                  ? `${data.product.nutriments.sugars}${data.product.nutriments.sugars_unit || 'g'}`
                   : "N/A"}
               </p>
               <p>
                 <strong>Fiber:</strong>{" "}
-                {data.product.nutriments?.fiber 
-                  ? `${data.product.nutriments.fiber}${data.product.nutriments.fiber_unit || 'g'}` 
+                {data.product.nutriments?.fiber
+                  ? `${data.product.nutriments.fiber}${data.product.nutriments.fiber_unit || 'g'}`
                   : "N/A"}
               </p>
               <p>
                 <strong>Salt:</strong>{" "}
-                {data.product.nutriments?.salt 
-                  ? `${data.product.nutriments.salt}${data.product.nutriments.salt_unit || 'g'}` 
+                {data.product.nutriments?.salt
+                  ? `${data.product.nutriments.salt}${data.product.nutriments.salt_unit || 'g'}`
                   : "N/A"}
               </p>
             </div>
-            
+
             {data.product.nutriscore_grade && (
               <p>
                 <strong>Nutri-Score:</strong> {data.product.nutriscore_grade.toUpperCase()}

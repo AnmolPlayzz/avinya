@@ -22,10 +22,6 @@ export default async function RootLayout({
       text: "Reclaim"
     },
     {
-      href: "/inventory-list",
-      text: "Inventory"
-    },
-    {
       href: "/scholarships",
       text: "Scholarships"
     },
@@ -40,20 +36,16 @@ export default async function RootLayout({
       href: "/inventory",
       text: "Canteen"
     },
-    {
-      href: "/inventory-admin",
-      text: "Inventory"
-    },
   ];
 
 
   return (
     <html lang="en">
       <body className={roboto.className}>
-      {!user && <NavBar links={linksUser} />  }
+      {!user && <NavBar loggedIn={false} links={linksUser} />  }
 
-      {user ? user.role == "user" && <NavBar links={linksUser} /> : null }
-        {user ? user.role == "admin" && <NavBar links={linksaAdmin} /> : null }
+      {user ? user.role == "user" && <NavBar loggedIn={true} links={linksUser} /> : null }
+        {user ? user.role == "admin" && <NavBar loggedIn={true} links={linksaAdmin} /> : null }
         {children}
       </body>
     </html>
