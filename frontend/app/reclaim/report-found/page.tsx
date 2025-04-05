@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import Loader from "@/components/library/loader/loader";
+import styles from "./page.module.css";
 interface LostItem {
   id: number;
   name: string;
@@ -17,8 +18,8 @@ const FoundPage = () => {
   useEffect(() => {
     const fetchLostItems = async () => {
       try {
-        const response = await axios.get('https://avinya-iv0j.onrender.com/lost-items');
-        const data: LostItem[] = response.data;
+        const response = await axios.get('https://avinya-iv0j.onrender.com/api/v1/lost-and-found');
+        const data: LostItem[] = response.data.data;
         setLostItems(data);
       } catch (err: any) {
         setError(err.message || 'An error occurred while fetching lost items.');
@@ -31,7 +32,7 @@ const FoundPage = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />
   }
 
   if (error) {
@@ -40,14 +41,19 @@ const FoundPage = () => {
 
   console.log(lostItems);
   return (
-    <div>
-      <h1>Lost Items</h1>
+    <div style={{
+      margin: "120px auto",
+      padding: "0 40px",
+      width: "100%",
+      maxWidth: "1000px",
+    }}>
+      <h1 className={styles.header}>Reclaim Items</h1>
       {lostItems.length === 0 ? (
         <p>No lost items found.</p>
       ) : (
         <ul>
-          {lostItems.map((item) => (
-            <li key={item.id}>
+          {lostItems.map((item,i) => (
+            <li key={i}>
               <h2>{item.name}</h2>
               <p>{item.description}</p>
               <p>Date Lost: {new Date(item.dateLost).toLocaleDateString()}</p>

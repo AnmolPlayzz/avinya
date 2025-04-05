@@ -1,5 +1,6 @@
 import { getCurrentSession, invalidateSession, deleteSessionTokenCookie } from "@/lib/session";
 import { redirect } from "next/navigation";
+import Loader from "@/components/library/loader/loader";
 
 export default async function DashboardPage() {
     const { user, session } = await getCurrentSession();
@@ -38,6 +39,7 @@ export default async function DashboardPage() {
                     </div>
                 )}
             </div>
+            <Loader />
         </div>
     );
 }
