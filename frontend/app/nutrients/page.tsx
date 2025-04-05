@@ -173,6 +173,7 @@ const NutritionPage = () => {
           )}
           
           <Button
+            disabled={isCapturing}
             text="Switch Camera"
             onClick={toggleCamera}
             variant="Secondary"
