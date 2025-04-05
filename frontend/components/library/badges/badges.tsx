@@ -18,7 +18,7 @@ export default function Badge({
         <div
             className={`${styles.badgeContainer} ${styles[varient]}`}
             style={{
-                width: width ? `${width}px` : "90px",
+                width: width ? `${width}px` : "max-content",
             }}
         >
             <span>{text}</span>
