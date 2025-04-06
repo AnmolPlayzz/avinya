@@ -42,7 +42,7 @@ export default async function RootLayout({
     },
     {
       href: "/event-management",
-      text: "Event"
+      text: "Events"
     }
   ];
 
