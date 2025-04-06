@@ -60,7 +60,7 @@ const InventoryPage = () => {
 
     try {
       const response = await axios.post(
-        "https://python-backend-xiup.onrender.com/predict",
+        "https://organisational-lorne-j2j-8cfa749c.koyeb.app/api/predict",
         payload
       );
       setPredictions(response.data.predictions);

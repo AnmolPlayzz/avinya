@@ -37,7 +37,7 @@ const FoundPage = () => {
   useEffect(() => {
     const fetchLostItems = async () => {
       try {
-        const response = await axios.get('https://avinya-iv0j.onrender.com/api/v1/lost-and-found');
+        const response = await axios.get('https://positive-elna-hackathonorg123-25128812.koyeb.app/api/v1/lost-and-found');
         const data: LostItem[] = response.data.data;
         setLostItems(data);
       } catch (err:  unknown | never ) {

@@ -74,8 +74,8 @@ const ReportPage = () => {
 
       const endpoint =
         activeTab === "lost"
-          ? "https://avinya-iv0j.onrender.com/api/v1/lost-and-found/lost-input"
-          : "https://avinya-iv0j.onrender.com/api/v1/lost-and-found/found-input";
+          ? "https://positive-elna-hackathonorg123-25128812.koyeb.app/api/v1/lost-and-found/lost-input"
+          : "https://positive-elna-hackathonorg123-25128812.koyeb.app/api/v1/lost-and-found/found-input";
 
       const response = await axios.post(endpoint, formData, {
         headers: {

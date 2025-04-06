@@ -47,7 +47,7 @@ export const Chat = () => {
     setHistory([]);
     setIsLoading(true);
     try {
-      const res = await axios.post('https://python-backend-xiup.onrender.com/api/chatbot/create', {});
+      const res = await axios.post('https://organisational-lorne-j2j-8cfa749c.koyeb.app/api/chatbot/create', {});
       console.log('Chatbot created:', res.data);
 
       const newChatbotId = res.data.chatbot_id;
@@ -84,7 +84,7 @@ export const Chat = () => {
       setLastMessageIndex(newHistory.length - 1);
 
       const res = await axios.post(
-          `https://python-backend-xiup.onrender.com/api/chatbot/${currentChatbotId}/chat`,
+          `https://organisational-lorne-j2j-8cfa749c.koyeb.app/api/chatbot/${currentChatbotId}/chat`,
           { message }
       );
       console.log('Response from server:', res.data);

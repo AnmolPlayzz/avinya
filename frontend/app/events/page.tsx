@@ -20,7 +20,7 @@ export default function Page() {
     useEffect(() => {
         const fetchLostItems = async () => {
             try {
-                const response = await axios.get('https://avinya-iv0j.onrender.com/api/v1/events');
+                const response = await axios.get('https://positive-elna-hackathonorg123-25128812.koyeb.app/api/v1/events');
                 const data: EventData[] = response.data.data;
                 setEvents(data);
             } catch (err:  unknown | never ) {
