@@ -8,7 +8,7 @@ import Pagination from "@/components/library/pagination/pagination";
 
 const ScholarshipPage = () => {
   const [error, setError] = useState<string | null>(null);
-  const [filterData, setFilterData] = useState<any[]>(scholarships);
+  const [filterData, ] = useState<any[]>(scholarships);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 

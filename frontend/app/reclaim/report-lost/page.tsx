@@ -160,6 +160,7 @@ const ReportPage = () => {
           <div>
             <label htmlFor={dateField} className={styles.label}>{dateLabel}</label>
             <SingleInput
+
               name={dateField}
               type="datetime-local"
               value={itemData[dateField] as string}

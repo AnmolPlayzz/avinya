@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import bgm from "@/public/backgrounds/haikei.svg";
 
-export default async function ChooseRolePage({ searchParams }: { searchParams: { id: string } }) {
+export default async function ChooseRolePage({ searchParams }: { searchParams: any }) {
     // Check if already logged in
     const { user } = await getCurrentSession();
     if (user) {

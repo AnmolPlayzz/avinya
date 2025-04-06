@@ -60,6 +60,7 @@ export default function SelectMenu({
         if (dropdownRef.current) {
             dropdownRef.current.style.height = `${dropdownRef.current.scrollHeight}px`;
             // Force reflow
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             dropdownRef.current.offsetHeight;
             dropdownRef.current.style.height = '0';
             dropdownRef.current.style.opacity = '0';
@@ -80,6 +81,7 @@ export default function SelectMenu({
             dropdownRef.current.style.opacity = '0';
 
             // Force reflow
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             dropdownRef.current.offsetHeight;
 
             // Animate to full height

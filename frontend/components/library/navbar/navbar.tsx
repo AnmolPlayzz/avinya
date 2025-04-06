@@ -9,7 +9,6 @@ import cross from "@/public/icons/navbar/cross.svg"
 
 import {usePathname} from "next/navigation";
 import {useEffect, useState} from "react";
-import Button from "@/components/library/buttons/button";
 import {logout} from "@/lib/actions";
 type LinkType = {
     href: string,

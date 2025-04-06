@@ -16,8 +16,8 @@ export default function Page() {
         flexDirection: "column",
     }}>
         <div className={styles.header}>
-            <h1>Reclaim</h1>
-            <p>Reclaim/report any lost items.</p>
+            <h1 className={styles.h1}>Reclaim</h1>
+            <p className={styles.p1}>Reclaim/report any lost items.</p>
             <Image src={bg} alt={"Background"} fill style={{
                 objectFit: "cover",
                 objectPosition: "center",
@@ -26,12 +26,12 @@ export default function Page() {
         </div>
         <div className={styles.grid}>
             <Link href={"/reclaim/report-found"} className={styles.action}>
-                <h2>Reclaim</h2>
-                <p>Reclaim any lost items.</p>
+                <h2 className={styles.h2}>Reclaim</h2>
+                <p className={styles.p}>Reclaim any lost items.</p>
             </Link>
             <Link href={"/reclaim/report-lost"} className={styles.action}>
-                <h2>Report</h2>
-                <p>Report any lost/found items.</p>
+                <h2 className={styles.h2}>Report</h2>
+                <p className={styles.p}>Report any lost/found items.</p>
             </Link>
         </div>
     </div>

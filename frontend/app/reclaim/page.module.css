@@ -8,14 +8,14 @@
     padding: 24px;
     color: white;
     position: relative;
-    h1 {
+    .h1 {
         font-size: 40px;
         font-weight: 900;
         width: fit-content;
         position: relative;
         margin-bottom: 0px;
     }
-    p {
+    .p1 {
         font-size: 18px;
         font-weight: 200;
         width: fit-content;
@@ -36,13 +36,13 @@
         background: rgba(68, 68, 68, 0.3);
         transition: all 0.2s ease;
 
-        h2 {
+        .h2 {
             font-size: 24px;
             font-weight: 900;
             width: fit-content;
             margin-bottom: 0px;
         }
-        p {
+        .p {
             font-size: 16px;
             font-weight: 200;
             width: fit-content;

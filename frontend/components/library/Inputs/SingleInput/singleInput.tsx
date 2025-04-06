@@ -9,13 +9,15 @@ export default function SingleInput({
   width,
   value,
   onChange,
+    name,
   ...props
 }: {
   type?: string,
   value?: string | number | undefined,
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  holder: string,
+  holder?: string,
   width?: number,
+  name?: string,
   props?: any[]
 }) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +38,7 @@ export default function SingleInput({
         onChange={handleChange}
         value={value}
         type={type}
+        name={name}
         {...props}
         style={{
           width: width ? `${width}px` : '100%',

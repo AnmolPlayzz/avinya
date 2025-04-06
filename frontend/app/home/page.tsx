@@ -1,6 +1,5 @@
-import { getCurrentSession, invalidateSession, deleteSessionTokenCookie } from "@/lib/session";
+import { getCurrentSession,} from "@/lib/session";
 import { redirect } from "next/navigation";
-import {logout} from "@/lib/actions";
 
 export default async function DashboardPage() {
     const { user, } = await getCurrentSession();
