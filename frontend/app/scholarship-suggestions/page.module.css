@@ -1,0 +1,125 @@
+/* Add these styles to your existing page.module.css file */
+
+.navigationBar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 0;
+    margin-bottom: 20px;
+  }
+
+  .main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: rgba(21, 21, 21, 0.73);
+    color: white;
+  }
+  
+  .findMatchingButton {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .findMatchingButton:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .navButton {
+    background-color: #4b5563;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .navButton:hover {
+    background-color: #374151;
+  }
+  
+  .uploadContainer {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: rgba(21,21,21,0.73);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+  }
+  
+  .uploadDescription {
+    font-size: 18px;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .fileInput {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background-color: rgba(21,21,21,0.5);
+    color: white;
+  }
+  
+  .submitButton {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 20px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submitButton:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .submitButton:disabled {
+    background-color: #6b7280;
+    cursor: not-allowed;
+  }
+
+  .title {
+    font-size: 38px;
+    background: -webkit-linear-gradient(45deg, rgb(217, 160, 255) 8.63%, rgb(152, 166, 255) 50%, rgb(147, 255, 220) 86.8%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    font-weight: 900;
+    width: fit-content;
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.title::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translate(-50%,0);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(117, 117, 117) 50%, rgb(0, 0, 0) 100%);
+    transition: all 0.2s ease;
+}

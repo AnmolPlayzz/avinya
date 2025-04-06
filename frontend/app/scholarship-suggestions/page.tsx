@@ -30,7 +30,7 @@ const ResumeUploadPage = () => {
       const formData = new FormData();
       formData.append("resume", selectedImage);
 
-      const res = await fetch("https://python-backend-xiup.onrender.com/api/process-resume", {
+      const res = await fetch("https://avinya-python-backend.onrender.com/recommend", {
         method: "POST",
         body: formData,
       });

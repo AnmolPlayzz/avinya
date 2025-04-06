@@ -4,9 +4,7 @@ import styles from "./page.module.css";
 import { scholarships } from "./scholarship";
 import Image from "next/image";
 import Link from "next/link";
-
 import Pagination from "@/components/library/pagination/pagination";
-import axios from "axios";
 
 const ScholarshipPage = () => {
   const [filterData, ] = useState<any[]>(scholarships);
