@@ -3,14 +3,15 @@ import { useState } from "react";
 import styles from "./page.module.css"
 import { scholarships } from "./scholarship";
 import Image from "next/image";
-
 import Pagination from "@/components/library/pagination/pagination";
+import axios from "axios";
 
 const ScholarshipPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [filterData, ] = useState<any[]>(scholarships);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
   if (error) {
     return (
@@ -31,7 +32,6 @@ const ScholarshipPage = () => {
 
   const handlePageChange = (page: number) => {
       setCurrentPage(page);
-      console.log(`Page changed to ${page}`);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +40,7 @@ const ScholarshipPage = () => {
   };
   
     const handlePythonBackend = async () => {
+        setLoading(true);
         if (!selectedImage) {
           setError("Please select an image");
           return;
@@ -50,20 +51,17 @@ const ScholarshipPage = () => {
         try {
           const formData = new FormData();
           formData.append("resume", selectedImage);
-    
-          const res = await fetch("https://python-backend-xiup.onrender.com/api/process-resume", {
-            method: "POST",
-            body: formData,
-          });
-          console.log("Response from Python backend:", res);
-    
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-          }
-    
-          const data = await res.json();
-          console.log("Success:", data);
-          // Handle the response data here
+          console.log("Selected image:", selectedImage);
+          console.log("Form data:", formData);
+          
+          const res = await axios.post("http://127.0.0.1:5000/recommend", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data", 
+          }},
+          );
+          const data = await res.data;
+          setLoading(false);
+          console.log("Response data:", data.recommendations);
         } catch (error: any) {
           console.error("Error fetching data from Python backend:", error);
           setError(error.message || "Failed to process resume");
