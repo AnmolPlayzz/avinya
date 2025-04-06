@@ -5,6 +5,7 @@ import { scholarships } from "./scholarship";
 import Image from "next/image";
 import Link from "next/link";
 import Pagination from "@/components/library/pagination/pagination";
+import Button from "@/components/library/buttons/button";
 
 const ScholarshipPage = () => {
   const [filterData, ] = useState<any[]>(scholarships);
@@ -37,16 +38,24 @@ const ScholarshipPage = () => {
 
   return (
     <div className={styles.main}>
-      <div className={styles.navigationBar}>
-        <Link href="/scholarship-suggestions" className={styles.findMatchingButton}>
-          Find Matching Scholarships
-        </Link>
-      </div>
       
       <h1 className={styles.head}>
         Available Scholarships
       </h1>
       
+      <div style={{
+        marginBottom: "20px",
+      }}>
+        <Link href="/scholarship-suggestions" className={styles.findMatchingButton}>
+         <Button 
+            text="Suggestions"
+            variant="Secondary"
+            disabled={loading}
+            onClick={() => {}}
+            width={160}
+        />
+        </Link>
+      </div>
       {scholarships.length === 0 ? (
         <p className="text-center text-gray-600">No scholarships found.</p>
       ) : (
