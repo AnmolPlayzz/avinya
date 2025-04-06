@@ -2,7 +2,6 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 import Button from "@/components/library/buttons/button";
-import { scholarships } from "./scholarship";
 
 const ResumeUploadPage = () => {
   const [error, setError] = useState<string | null>(null);
