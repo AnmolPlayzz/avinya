@@ -7,9 +7,10 @@ import Image from "next/image";
 import Pagination from "@/components/library/pagination/pagination";
 
 const ScholarshipPage = () => {
-  const [error,] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [filterData, setFilterData] = useState<any[]>(scholarships);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   if (error) {
     return (
@@ -33,11 +34,53 @@ const ScholarshipPage = () => {
       console.log(`Page changed to ${page}`);
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+    setSelectedImage(file || null);
+  };
+  
+    const handlePythonBackend = async () => {
+        if (!selectedImage) {
+          setError("Please select an image");
+          return;
+        }
+    
+        setError(null);
+    
+        try {
+          const formData = new FormData();
+          formData.append("resume", selectedImage);
+    
+          const res = await fetch("https://python-backend-xiup.onrender.com/api/process-resume", {
+            method: "POST",
+            body: formData,
+          });
+          console.log("Response from Python backend:", res);
+    
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+    
+          const data = await res.json();
+          console.log("Success:", data);
+          // Handle the response data here
+        } catch (error: any) {
+          console.error("Error fetching data from Python backend:", error);
+          setError(error.message || "Failed to process resume");
+        }
+      };
+
   return (
     <div className={styles.main}>
       <h1 className={styles.head}>
         Available Scholarships
       </h1>
+      <p>Upload Resume here</p>
+      <input 
+        type="file" 
+        accept="image/png, image/jpeg, image/jpg" 
+        onChange={handleImageChange}/>
+      <button onClick={handlePythonBackend}>Submit</button>
       {scholarships.length === 0 ? (
         <p className="text-center text-gray-600">No scholarships found.</p>
       ) : (
