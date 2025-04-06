@@ -1,0 +1,15 @@
+.main {
+    position: relative;
+}
+
+.main::after {
+    background: linear-gradient(90deg, rgba(195, 84, 255, 1) 8.63%, rgba(106, 127, 246, 1) 50%, rgba(92, 255, 192, 1) 86.8%);
+    position: absolute;
+    content: "";
+    top: -1px;
+    left: -1px;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    z-index: -1;
+    border-radius: 8px;
+}

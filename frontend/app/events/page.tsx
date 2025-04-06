@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Loader from "@/components/library/loader/loader";
-import {Agdasima} from "next/dist/compiled/@next/font/dist/google";
 import Image from "next/image";
 
 type EventData = {
