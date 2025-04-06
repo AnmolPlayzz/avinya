@@ -33,8 +33,8 @@ export default async function DashboardPage() {
 
                 {user.role === "admin" && (
                     <div className="mt-6 p-4 bg-gray-100 rounded-md">
-                        <h3 className="text-lg font-medium mb-2">Admin Panel</h3>
-                        <p>You are signed in as an Admin.</p>
+                        <h3 className="text-lg bg-gray-100 text-black font-medium mb-2">Admin Panel</h3>
+                        <p className="text-black">You are signed in as an Admin.</p>
                     </div>
                 )}
             </div>
