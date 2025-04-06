@@ -29,7 +29,7 @@ const ResumeUploadPage = () => {
       const formData = new FormData();
       formData.append("resume", selectedImage);
 
-      const res = await fetch("https://avinya-python-backend.onrender.com/recommend", {
+      const res = await fetch("https://philosophical-swan-tanmay-personal-cd9d5e36.koyeb.app/recommend", {
         method: "POST",
         body: formData,
       });
