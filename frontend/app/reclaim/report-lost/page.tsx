@@ -10,8 +10,8 @@ import Button from "@/components/library/buttons/button";
 interface ItemData {
   name: string;
   description: string;
-  dateLost?: string;
-  dateFound?: string;
+  dateLost: string;
+  dateFound: string;
   location: string;
 }
 
@@ -43,7 +43,6 @@ const ReportPage = () => {
 
   const handleTabChange = (tab: "lost" | "found") => {
     setActiveTab(tab);
-    // Reset form when changing tabs
     setItemData({
       name: "",
       description: "",
@@ -62,20 +61,21 @@ const ReportPage = () => {
       formData.append("name", itemData.name);
       formData.append("description", itemData.description);
       formData.append("location", itemData.location);
-      
+
       if (activeTab === "lost") {
-        formData.append("dateLost", itemData.dateLost || "");
+        formData.append("date", itemData.dateLost || "");
       } else {
-        formData.append("dateFound", itemData.dateFound || "");
+        formData.append("date", itemData.dateFound || "");
       }
-      
+
       if (imageFile) {
         formData.append("image", imageFile);
       }
 
-      const endpoint = activeTab === "lost" 
-        ? "https://avinya-iv0j.onrender.com/lost-items"
-        : "https://avinya-iv0j.onrender.com/found-item";
+      const endpoint =
+        activeTab === "lost"
+          ? "https://avinya-iv0j.onrender.com/api/v1/lost-and-found/lost-input"
+          : "https://avinya-iv0j.onrender.com/api/v1/lost-and-found/found-input";
 
       const response = await axios.post(endpoint, formData, {
         headers: {
@@ -84,11 +84,14 @@ const ReportPage = () => {
       });
 
       console.log(response.data);
-      setSuccessMessage(`${activeTab === "lost" ? "Lost" : "Found"} item reported successfully!`);
-      
-      // Navigate after a short delay to show success message
+      setSuccessMessage(
+        `${activeTab === "lost" ? "Lost" : "Found"} item reported successfully!`
+      );
+
       setTimeout(() => {
-        router.push(activeTab === "lost" ? "/reclaim/report-lost" : "/reclaim/report-found");
+        router.push(
+          activeTab === "lost" ? "/reclaim/report-found" : "/reclaim/report-found"
+        );
       }, 2000);
     } catch (err: any) {
       console.error(
@@ -100,10 +103,11 @@ const ReportPage = () => {
 
   const dateField = activeTab === "lost" ? "dateLost" : "dateFound";
   const dateLabel = activeTab === "lost" ? "Date Lost:" : "Date Found:";
-  const isFormValid = itemData.name && 
-                      itemData.description && 
-                      (activeTab === "lost" ? itemData.dateLost : itemData.dateFound) && 
-                      itemData.location;
+  const isFormValid =
+    itemData.name &&
+    itemData.description &&
+    (activeTab === "lost" ? itemData.dateLost : itemData.dateFound) &&
+    itemData.location;
 
   return (
     <div className={styles.container}>
@@ -111,13 +115,13 @@ const ReportPage = () => {
         {activeTab === "lost" ? "Report Lost Item" : "Report Found Item"}
       </h1>
       <div className={styles.tabContainer}>
-        <button 
+        <button
           className={`${styles.button} ${activeTab === "lost" ? styles.active : ""}`}
           onClick={() => handleTabChange("lost")}
         >
           Report Lost
         </button>
-        <button 
+        <button
           className={`${styles.button} ${activeTab === "found" ? styles.active : ""}`}
           onClick={() => handleTabChange("found")}
         >
@@ -127,7 +131,7 @@ const ReportPage = () => {
       <p className={styles.subtitle}>
         Please fill out the form below to report a {activeTab} item.
       </p>
-      
+
       <div className={styles.formWrapper}>
         {successMessage && (
           <div className={styles.successMessage}>{successMessage}</div>
@@ -136,6 +140,7 @@ const ReportPage = () => {
           <div>
             <label htmlFor="name" className={styles.label}>Name:</label>
             <SingleInput
+              name="name"
               type="text"
               holder="Enter the item's name"
               value={itemData.name}
@@ -145,6 +150,7 @@ const ReportPage = () => {
           <div>
             <label htmlFor="description" className={styles.label}>Description:</label>
             <SingleInput
+              name="description"
               type="text"
               holder="Provide a brief description"
               value={itemData.description}
@@ -154,15 +160,16 @@ const ReportPage = () => {
           <div>
             <label htmlFor={dateField} className={styles.label}>{dateLabel}</label>
             <SingleInput
+              name={dateField}
               type="datetime-local"
-              holder=""
-              value={activeTab === "lost" ? itemData.dateLost : itemData.dateFound}
+              value={itemData[dateField] as string}
               onChange={handleInputChange}
             />
           </div>
           <div>
             <label htmlFor="location" className={styles.label}>Location:</label>
             <SingleInput
+              name="location"
               type="text"
               holder={`Enter the location where the item was ${activeTab}`}
               value={itemData.location}
