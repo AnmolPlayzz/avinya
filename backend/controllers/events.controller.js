@@ -20,51 +20,48 @@ const fetch_all = asyncHandler(async (req, res) => {
 
 const add_event = asyncHandler(async (req, res) => {
     const { name, discription } = req.body;
-    
-    // Check if required fields are present
+
     if (!name || !discription) {
-        return res
-            .status(400)
-            .json(new ApiError(400, "Bad Request", "Name and description are required"));
+        throw new ApiError(400, "Name and description are required");
     }
-    
-    // Check if image file is present
-    if (!req.file) {
-        return res
-            .status(400)
-            .json(new ApiError(400, "Bad Request", "Image is required"));
+
+    const image = req.file?.path || null;
+
+    if (!image) {
+        throw new ApiError(400, "Image is required");
     }
-    
+
     try {
-        // Upload the image to Cloudinary
-        const uploadResult = await uploadOnCloudinary(req.file.path, "events");
-        
-        if (!uploadResult || !uploadResult.secure_url) {
-            return res
-                .status(500)
-                .json(new ApiError(500, "Internal Server Error", "Image upload failed"));
+        const uploadResult = await uploadOnCloudinary(image);
+
+        if (!uploadResult?.secure_url) {
+            throw new ApiError(500, "Image upload failed");
         }
-        
+
         const imageUrl = uploadResult.secure_url;
-        
-        // Use parameterized query to prevent SQL injection
-        const query = "INSERT INTO events (event_name, discription, image) VALUES (?, ?, ?)";
+
+        // Use PostgreSQL-style parameterized query
+        const query = `
+            INSERT INTO events (name_of_event, description, image_url)
+            VALUES ($1, $2, $3)
+        `;
         const values = [name, discription, imageUrl];
-        
+
         await sql.query(query, values);
-        
-        res
-            .status(201)
-            .json(new ApiResponse(201, null, 'Event added successfully!'));
-            
+
+        return res.status(201).json(
+            new ApiResponse(201, null, "Event added successfully!")
+        );
     } catch (error) {
+        console.error("Add event error:", error);
         throw new ApiError(500, "Internal Server Error", error.message);
     }
 });
 
+
 const delete_event = asyncHandler(async (req, res) => {
     const id = req.body?.id;
-    
+
     if (!id) {
         throw new ApiError(400, "ID is required");
     }
@@ -100,7 +97,7 @@ const edit_event = asyncHandler(async (req, res) => {
 
     let query = `UPDATE events SET name_of_event = $1, description = $2`;
     const values = [name, discription];
-    let paramIndex = 3; // Start from $3
+    let paramIndex = 3;
 
     if (imageUrl) {
         query += `, image_url = $${paramIndex}`;
