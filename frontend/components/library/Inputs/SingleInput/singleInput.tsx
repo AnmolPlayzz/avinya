@@ -9,7 +9,7 @@ export default function SingleInput({
   width,
   value,
   onChange,
-    name,
+  name,
   ...props
 }: {
   type?: string,
@@ -21,6 +21,12 @@ export default function SingleInput({
   props?: any[]
 }) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === "number") {
+      const newValue = e.target.value;
+      // Only allow digits (0-9)
+      if (!/^\d*$/.test(newValue)) return;
+    }
+
     onChange?.(e);
   };
 
@@ -49,3 +55,4 @@ export default function SingleInput({
     </div>
   );
 }
+
