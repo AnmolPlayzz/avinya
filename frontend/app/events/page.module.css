@@ -1,0 +1,45 @@
+.main {
+    padding: 120px 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.head {
+    font-size: 38px;
+    background: -webkit-linear-gradient(45deg, rgb(217, 160, 255) 8.63%, rgb(152, 166, 255) 50%, rgb(147, 255, 220) 86.8%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    font-weight: 900;
+    width: fit-content;
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.head::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translate(-50%,0);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(117, 117, 117) 50%, rgb(0, 0, 0) 100%);
+    transition: all 0.2s ease;
+}
+
+.card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-radius: 7px;
+    padding: 22px;
+    border: 1px solid rgba(84, 84, 84, 0.51);
+    background: rgba(94, 94, 94, 0.23);
+}
