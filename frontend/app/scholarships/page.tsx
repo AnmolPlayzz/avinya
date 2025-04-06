@@ -10,7 +10,8 @@ const ScholarshipPage = () => {
   const [filterData, ] = useState<any[]>(scholarships);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (error) {
     return (
