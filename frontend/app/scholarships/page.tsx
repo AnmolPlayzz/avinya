@@ -9,6 +9,16 @@ import Pagination from "@/components/library/pagination/pagination";
 const ScholarshipPage = () => {
   const [filterData, ] = useState<any[]>(scholarships);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [, setLoading] = useState(false);
+
+  if (error) {
+    return (
+      <div className="text-center text-red-500 text-lg font-semibold">
+        Error: {error}
+      </div>
+    );
+  }
 
   // Calculate pagination data
   const componentsPerPage = 6;
